@@ -12,7 +12,6 @@ import woowacourse.shopping.common.model.CartProductModel
 import woowacourse.shopping.common.utils.Toaster
 import woowacourse.shopping.data.cart.CartRepositoryImpl
 import woowacourse.shopping.data.database.ShoppingDBOpenHelper
-import woowacourse.shopping.data.database.dao.CartDao
 import woowacourse.shopping.databinding.ActivityCartBinding
 import woowacourse.shopping.server.CartRemoteDataSource
 
@@ -119,7 +118,7 @@ class CartActivity : AppCompatActivity(), CartContract.View {
         val db = ShoppingDBOpenHelper(this).writableDatabase
         presenter = CartPresenter(
             this,
-            cartRepository = CartRepositoryImpl(CartRemoteDataSource(), CartDao(db)),
+            cartRepository = CartRepositoryImpl(CartRemoteDataSource()),
             sizePerPage = SIZE_PER_PAGE
         )
     }

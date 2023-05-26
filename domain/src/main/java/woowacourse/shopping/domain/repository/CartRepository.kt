@@ -12,13 +12,13 @@ interface CartRepository {
 
     fun deleteCartProduct(cartProduct: CartProduct)
 
-    fun getTotalAmount(): Int
+    // fun getTotalAmount(): Int
 
-    fun getCartProductByProduct(product: Product): CartProduct?
+    // fun getCartProductByProduct(product: Product): CartProduct?
 
-    fun modifyCartProduct(cartProduct: CartProduct)
+    fun updateCartProductQuantity(cartProduct: CartProduct, onSuccess: () -> Unit, onFailure: () -> Unit)
 
-    fun getTotalPrice(): Int
+    // fun getTotalPrice(): Int
 
     fun replaceCartProduct(prev: CartProduct, new: CartProduct)
 

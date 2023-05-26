@@ -10,6 +10,7 @@ import woowacourse.shopping.common.model.mapper.ShoppingProductMapper.toView
 import woowacourse.shopping.domain.CartProduct
 import woowacourse.shopping.domain.Product
 import woowacourse.shopping.domain.RecentProduct
+import woowacourse.shopping.domain.ShoppingProduct
 import woowacourse.shopping.domain.repository.CartRepository
 import woowacourse.shopping.domain.repository.ProductRepository
 import woowacourse.shopping.domain.repository.RecentProductRepository
@@ -109,20 +110,24 @@ class ShoppingPresenter(
     }
 
     private fun updateCartAmount() {
-        val totalAmount = cartRepository.getTotalAmount()
-        view.updateCartAmount(totalAmount)
+        cartRepository.getAllCount(
+            onSuccess = {
+                view.updateCartAmount(it)
+            },
+            onFailure = { }
+        )
     }
 
     override fun decreaseCartProductAmount(shoppingProductModel: ShoppingProductModel) {
-        var cartProduct = getCartProduct(shoppingProductModel.product)
-        cartProduct = cartProduct.decreaseAmount()
-        if (cartProduct.quantity > 0) {
-            updateCartProduct(cartProduct)
-        } else {
-            removeFromCart(cartProduct)
-        }
-        updateShoppingProduct(shoppingProductModel, cartProduct.quantity)
-        updateCartAmount()
+        // var cartProduct = getCartProduct(shoppingProductModel.product)
+        // cartProduct = cartProduct.decreaseAmount()
+        // if (cartProduct.quantity > 0) {
+        //     updateCartProductQuantity(cartProduct)
+        // } else {
+        //     removeFromCart(cartProduct)
+        // }
+        // updateShoppingProduct(shoppingProductModel, cartProduct.quantity)
+        // updateCartAmount()
     }
 
     private fun removeFromCart(cartProduct: CartProduct) {
@@ -136,52 +141,54 @@ class ShoppingPresenter(
                 if (it == null) {
                     addToCart(shoppingProductModel)
                 } else {
-                    // updateCartProduct(cartProduct)
-                    // updateShoppingProduct(shoppingProductModel, cartProduct.quantity)
-                    // updateCartAmount()
+                    val cartProduct = CartProduct(
+                        id = it,
+                        quantity = shoppingProductModel.amount + 1,
+                        isChecked = true,
+                        product = shoppingProductModel.product.toDomain()
+                    )
+                    updateCartProductQuantity(cartProduct)
                 }
             },
             onFailure = {}
         )
     }
 
-    private fun getCartProduct(productModel: ProductModel): CartProduct {
-        var cartProduct: CartProduct? =
-            cartRepository.getCartProductByProduct(productModel.toDomain())
-        if (cartProduct == null) {
-            cartProduct = CartProduct(
-                id = 0,
-                quantity = 0,
-                isChecked = true,
-                product = productModel.toDomain()
-            )
-        }
-        return cartProduct
-    }
+    // private fun getCartProduct(productModel: ProductModel): CartProduct {
+    //     var cartProduct: CartProduct? =
+    //         cartRepository.getCartProductByProduct(productModel.toDomain())
+    //     if (cartProduct == null) {
+    //         cartProduct = CartProduct(
+    //             id = 0,
+    //             quantity = 0,
+    //             isChecked = true,
+    //             product = productModel.toDomain()
+    //         )
+    //     }
+    //     return cartProduct
+    // }
 
-    private fun updateCartProduct(cartProduct: CartProduct) {
-        cartRepository.modifyCartProduct(cartProduct)
-    }
-
-    private fun addToCart(shoppingProductModel: ShoppingProductModel) {
-        cartRepository.addCartProduct(
-            shoppingProductModel.toDomain().product,
+    private fun updateCartProductQuantity(cartProduct: CartProduct) {
+        cartRepository.updateCartProductQuantity(
+            cartProduct = cartProduct,
             onSuccess = {
-                updateShoppingProduct(shoppingProductModel, 1)
+                val shoppingProduct = ShoppingProduct(cartProduct.product, cartProduct.quantity)
+                view.updateShoppingProduct(shoppingProduct.toView())
                 updateCartAmount()
             },
             onFailure = {}
         )
     }
 
-    private fun updateShoppingProduct(
-        shoppingProductModel: ShoppingProductModel,
-        quantity: Int
-    ) {
-        val newShoppingProductModel = ShoppingProductModel(
-            shoppingProductModel.product,
-            quantity
+    private fun addToCart(shoppingProductModel: ShoppingProductModel) {
+        cartRepository.addCartProduct(
+            shoppingProductModel.toDomain().product,
+            onSuccess = {
+                val shoppingProduct = ShoppingProduct(shoppingProductModel.product.toDomain(), 1)
+                view.updateShoppingProduct(shoppingProduct.toView())
+                updateCartAmount()
+            },
+            onFailure = {}
         )
-        view.updateShoppingProduct(shoppingProductModel, newShoppingProductModel)
     }
 }

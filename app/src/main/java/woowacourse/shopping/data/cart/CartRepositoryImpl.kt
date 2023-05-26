@@ -1,6 +1,5 @@
 package woowacourse.shopping.data.cart
 
-import woowacourse.shopping.data.database.dao.CartDao
 import woowacourse.shopping.domain.CartProduct
 import woowacourse.shopping.domain.Product
 import woowacourse.shopping.domain.repository.CartRepository
@@ -8,7 +7,7 @@ import woowacourse.shopping.server.CartRemoteDataSource
 
 class CartRepositoryImpl(
     private val cartRemoteDataSource: CartRemoteDataSource,
-    private val cartDao: CartDao
+    // private val cartDao: CartDao
 ) : CartRepository {
 
     override fun addCartProduct(product: Product, onSuccess: (Int) -> Unit, onFailure: () -> Unit) {
@@ -43,21 +42,18 @@ class CartRepositoryImpl(
         // cart = cart.removeCartProduct(cartProduct)
     }
 
-    override fun getTotalAmount(): Int {
-        return cartDao.getTotalAmount()
+    override fun updateCartProductQuantity(cartProduct: CartProduct, onSuccess: () -> Unit, onFailure: () -> Unit) {
+        cartRemoteDataSource.updateCartProductQuantity(
+            id = cartProduct.id,
+            quantity = cartProduct.quantity,
+            onSuccess = { },
+            onFailure = { }
+        )
     }
 
-    override fun getCartProductByProduct(product: Product): CartProduct? {
-        return cartDao.selectCartProductByProduct(product)
-    }
-
-    override fun modifyCartProduct(cartProduct: CartProduct) {
-        cartDao.updateCartProduct(cartProduct)
-    }
-
-    override fun getTotalPrice(): Int {
-        return cartDao.getTotalPrice()
-    }
+    // override fun getTotalPrice(): Int {
+    //     return cartDao.getTotalPrice()
+    // }
 
     override fun replaceCartProduct(prev: CartProduct, new: CartProduct) {
         // cart = cart.replaceCartProduct(prev, new)

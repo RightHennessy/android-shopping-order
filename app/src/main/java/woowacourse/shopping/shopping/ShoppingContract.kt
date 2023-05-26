@@ -36,7 +36,7 @@ interface ShoppingContract {
 
         fun updateCartAmount(amount: Int)
 
-        fun updateShoppingProduct(prev: ShoppingProductModel, new: ShoppingProductModel)
+        fun updateShoppingProduct(shoppingProductModel: ShoppingProductModel)
 
         fun notifyLoadFailed()
     }

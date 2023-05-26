@@ -122,7 +122,7 @@ class CartProductDialogPresenterTest {
 
         // then
         verify {
-            cartRepository.modifyCartProduct(any())
+            cartRepository.updateCartProductQuantity(any())
             view.notifyAddToCartCompleted()
         }
     }

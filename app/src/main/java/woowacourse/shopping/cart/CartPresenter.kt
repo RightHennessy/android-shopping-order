@@ -153,7 +153,11 @@ class CartPresenter(
     }
 
     private fun updateCartProduct(prev: CartProduct, new: CartProduct) {
-        cartRepository.modifyCartProduct(new)
+        cartRepository.updateCartProductQuantity(
+            cartProduct = new,
+            onSuccess = { },
+            onFailure = { }
+        )
         cartRepository.replaceCartProduct(prev, new)
         view.updateCartProduct(prev.toView(), new.toView())
     }

@@ -23,7 +23,6 @@ import woowacourse.shopping.common.utils.Toaster
 import woowacourse.shopping.common.utils.convertDpToPixel
 import woowacourse.shopping.data.cart.CartRepositoryImpl
 import woowacourse.shopping.data.database.ShoppingDBOpenHelper
-import woowacourse.shopping.data.database.dao.CartDao
 import woowacourse.shopping.data.database.dao.RecentProductDao
 import woowacourse.shopping.data.product.ProductRepositoryImpl
 import woowacourse.shopping.data.recentproduct.RecentProductRepositoryImpl
@@ -170,8 +169,8 @@ class ShoppingActivity : AppCompatActivity(), ShoppingContract.View {
         shoppingCartAmount?.text = amount.toString()
     }
 
-    override fun updateShoppingProduct(prev: ShoppingProductModel, new: ShoppingProductModel) {
-        productAdapter.updateProduct(prev, new)
+    override fun updateShoppingProduct(shoppingProductModel: ShoppingProductModel) {
+        productAdapter.updateProduct(shoppingProductModel)
     }
 
     override fun notifyLoadFailed() {
@@ -198,7 +197,7 @@ class ShoppingActivity : AppCompatActivity(), ShoppingContract.View {
             this,
             productRepository = productRepository,
             recentProductRepository = RecentProductRepositoryImpl(RecentProductDao(db), ProductRemoteDataSource()),
-            cartRepository = CartRepositoryImpl(CartRemoteDataSource(), CartDao(db)),
+            cartRepository = CartRepositoryImpl(CartRemoteDataSource()),
             recentProductSize = 10,
             productLoadSize = 20
         )

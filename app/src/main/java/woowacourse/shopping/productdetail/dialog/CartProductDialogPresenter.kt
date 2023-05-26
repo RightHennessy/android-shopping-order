@@ -62,7 +62,11 @@ class CartProductDialogPresenter(
 
     private fun updateCartProduct(prevCartProduct: CartProduct) {
         cartProduct = prevCartProduct.copy(quantity = prevCartProduct.quantity + cartProduct.quantity)
-        cartRepository.modifyCartProduct(cartProduct)
+        cartRepository.updateCartProductQuantity(
+            cartProduct,
+            onSuccess = { },
+            onFailure = { }
+        )
     }
 
     companion object {
